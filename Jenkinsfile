@@ -143,7 +143,7 @@ pipeline {
                 script{
 				def releasedVersion = getReleaseVersion()
                 print releasedVersion
-				withCredentials([usernamePassword(credentialsId: 'gituser', passwordVariable: 'passgit', usernameVariable: 'usergit')]) {
+				withCredentials([usernamePassword(credentialsId: 'githubtoken', passwordVariable: 'passgit', usernameVariable: 'usergit')]) {
    				sh "mvn -B clean release:prepare release:perform -Darguments='-Dmaven.javadoc.skip=true' -Dusername=${usergit} -Dpassword=${passgit} -Dtag=release-${releasedVersion} -DreleaseVersion=${releasedVersion}"
 					}
                 }
@@ -153,7 +153,7 @@ pipeline {
         
         stage('Promote Artifact to UAT ') {
             steps {
-                sh 'curl --upload-file target/addressbook.war "http://tomcat:password@35.245.18.194:8083/manager/text/deploy?path=/addressbook-release&update=true"'
+                sh 'curl --upload-file target/addressbook.war "http://tomcat:password@10.62.125.9:8083/manager/text/deploy?path=/addressbook-release&update=true"'
                 //sh 'curl --upload-file target/addressbook.war "http://tomcat:password@34.93.238.186:8081/manager/text/deploy?path=/addressbook&update=true"'
                 //withCredentials([usernamePassword(credentialsId: 'nexusadmin', passwordVariable: 'pass', usernameVariable: 'user')]) {
                 //    sh 'curl --upload-file target/hello-world-war-1.0.0-SNAPSHOT.war "http://${user}:${pass}@34.93.240.217:8082/manager/text/deploy?path=/hello&update=true"'
